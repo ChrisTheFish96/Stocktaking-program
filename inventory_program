@@ -1,0 +1,251 @@
+# Program to aid in managing a warehouse and stocktaking.
+#=============Importing libraries============
+from tabulate import tabulate
+
+#========The beginning of the class==========
+# Define a class called Shoe.
+class Shoe:
+    # Method to initialize the class attributes
+    def __init__(self, country, code, product, cost, quantity):
+        self.country = country
+        self.code = code
+        self.product = product
+        self.cost = cost
+        self.quantity = quantity
+    # Method to obtain the cost of the shoes.
+    def get_cost(self):
+        self.cost()
+    # Method to obtain the quantities of the shoes.
+    def get_quantity(self):
+        self.quantity
+    # Method to aid in string printing throughout the program.
+    def __repr__(self):
+        return (f"{self.country},{self.code},{self.product},{self.cost},{self.quantity}\n")
+
+#=============Shoe list===========
+# Two empty lists to store the lines in the text file as a list of strings and a list of objects.
+shoe_list = []
+shoe_obj_list = []
+#==========Functions outside the class==============
+# Function to read in the shoes inventory list from the text file.
+    # Try - except block is used as defensive programming tactic if the file does not exist.
+def read_shoes_data():
+    try:
+            # Lines of the file is read, split up and placed in a 2D list.
+            # First line with table names is removed.
+            # Cost and quantitie columns are converted to floats and ints respectively.
+            # From the list of strings a list of class objects are created.
+        with open("inventory.txt", "r") as inventory_file:
+            shoe_list = []
+            shoe_lines = inventory_file.readlines()
+            for index, i in enumerate(shoe_lines):
+                shoe_list_split = i.split(",")
+                shoe_list.append(shoe_list_split)
+            shoe_list = shoe_list[1:]
+            for index, i in enumerate(shoe_list):
+                country = shoe_list[index][0]
+                code = shoe_list[index][1]
+                product = shoe_list[index][2]
+                cost = round((float(shoe_list[index][3])),2)
+                quantity = int(shoe_list[index][4])
+                shoe_list[index][4] = shoe_list[index][4].strip("\n")            
+                shoe_obj = Shoe(country, code, product, cost, quantity)
+                shoe_obj_list.append(shoe_obj)
+    except FileNotFoundError:
+        print('''The file you are attempting to read data from to does not exist.
+Please ensure it exists in the correct folder then restart the program and try again.''')
+        print()
+        exit()
+
+# Function to add another shoe to the inventory list.
+    # While loop is used to ensure the user enters numbers into the cost and quantity fields.
+def capture_shoes():
+    user_input_state = False
+    while user_input_state == False:
+        try:
+            user_country = input("Country: ")
+            user_code = input("Code: ")
+            user_product = input("Product: ")
+            user_cost = int(input("Cost: "))
+            user_quantity = int(input("Quantity: "))
+            user_input_state = True
+        except ValueError:
+            print("Values for cost and quantity needs to be numbers.")
+            user_input_state = False
+
+    # New Shoe object is created from user input and appended to the text file.
+    # Conformation of successful addition is printed to the terminal.
+    shoe_list.append(Shoe(user_country,user_code,user_product,user_cost,user_quantity))
+    with open("inventory.txt", "a") as inventory_file:
+        inventory_file.write(f"\n{user_country},{user_code},{user_product},{user_cost},{user_quantity}")
+    print()
+    print("New product added to inventory list.")
+    print()
+
+# Function to view all the shoes in the inventory list.
+def view_all():
+    # File is read again and split but the header row is not removed this time.
+    # List of strings is used to tabulate the inventory list for easy viewing.
+    with open("inventory.txt", "r") as inventory_file:
+        shoe_lines = inventory_file.readlines()
+        for index, i in enumerate(shoe_lines):
+            shoe_list_split = i.split(",")
+            shoe_list.append(shoe_list_split)
+            country = shoe_list[index][0]
+            code = shoe_list[index][1]
+            product = shoe_list[index][2]
+            cost = shoe_list[index][3]
+            quantity = shoe_list[index][4]
+            shoe_list[index][4] = shoe_list[index][4].strip("\n")
+    shoe = tabulate(shoe_list,headers='firstrow',tablefmt = 'pipe')
+    print(shoe)
+    print()
+
+# Function to restock shoes.
+def re_stock(): 
+    # Shoe with the lowest quantity value is found and printed to the terminal. 
+    print("The shoe with the lowest quantity:")
+    min_shoe = min(shoe_obj_list, key=lambda shoe: shoe.quantity)
+    print(f'''
+Country:\t{min_shoe.country}
+Code:\t\t{min_shoe.code}
+Product:\t{min_shoe.product}
+Cost:\t\tR {min_shoe.cost}
+Quantity:\t{min_shoe.quantity}
+''')
+    # While loop ensures the user types in the correct options as given.
+    user_restock_state = False
+    while user_restock_state == False:
+        # User is asked if they want to restock the shoe printed out. 
+            # If they do, they are asked how many they want to add. 
+            # This value is added to the quantity of the shoes bu simple addition. 
+            # New quantity is printed out to the terminal.
+            # The inventory list in the text file is reprinted with the new information from the restocking.
+            # If the user chose not to update the quantity they are redirected to the main menu. 
+            # If they enter anything but yes or no they are looped back to the question.
+        user_restock = (input("Would you like to restock this shoe? (Yes/No)\n")).lower()
+        print()
+        if user_restock == "yes":
+            quant_restock = int(input("How many do you want to add?\n"))
+            min_shoe.quantity = min_shoe.quantity + quant_restock
+            print(f"Quantity of {min_shoe.product} successfully changed to {min_shoe.quantity}.")
+            with open("inventory.txt", "w") as inventory_file:
+                inventory_file.write("Country,Code,Product,Cost,Quantity\n")
+                for shoes in shoe_obj_list:
+                    inventory_file.write(str(shoes))
+            user_restock_state = True
+        elif user_restock =="no":
+            print()
+            user_restock_state = True
+        else:
+            print("Please select a valid option.")
+            print()
+            user_restock_state = False
+
+# Function to search for a shoe in the inventory file.
+def seach_shoe():
+    # User is asked to provide a code for the shoes they want to view.
+    # Code is found within the shoe_obj_list.
+    # Details are printed for the shoe.
+    shoe_search = input("Please provide the code of the shoes you are looking for: ")
+    search_shoes = [shoes for shoes in shoe_obj_list if shoes.code==shoe_search]
+    for shoes in search_shoes:
+        print(f'''
+Country:\t{shoes.country}
+Code:\t\t{shoes.code}
+Product:\t{shoes.product}
+Cost:\t\tR {shoes.cost}
+Quantity:\t{shoes.quantity}
+    ''')         
+
+# Function to find the value for each shoe.
+    # For each shoe object, multiply the cost by the quantity.
+    # Print out the value.
+def value_per_item():
+    print("Total value of each product in inventory:")
+    print()
+    for shoe in shoe_obj_list:
+        value = (shoe.cost)*(shoe.quantity)
+        print(f'''{shoe.product} -- Value: R{value}
+        ''')
+
+# Function to find the highest quantity. 
+def highest_qty():
+    print("The shoe with the highest quantity:")
+    # Shoe with the highest quantity value is found and printed to the terminal. 
+    max_shoe = max(shoe_obj_list, key=lambda shoe: shoe.quantity)
+
+    print(f'''
+Country:\t{max_shoe.country}
+Code:\t\t{max_shoe.code}
+Product:\t{max_shoe.product}
+Cost:\t\tR {max_shoe.cost}
+Quantity:\t{max_shoe.quantity}
+''')
+    # While loop ensures user types in the correct input.
+    user_sale_state = False
+    while user_sale_state == False:
+        # User is asked if they want to paced the shoe on sale. 
+            # If they do, print a sentence stating it is on sale. 
+            # If the user chose not to place it on sale they are redirected to the main menu. 
+            # If they enter anything but yes or no they are looped back to the question.
+        user_sale = (input("Do you want to place these shoes on sale? (Yes/No)")).lower()
+        print()
+        if user_sale == "yes":
+            print("Now placed on sale to reduce stock.")
+            print()
+            user_sale_state = True
+        elif user_sale == "no":
+            print()
+            user_sale_state = True
+        else:
+            print("Please select a valid option.")
+            print()
+            user_sale_state = False
+
+#==========Main Menu=============
+# While loop for main menu.
+while True:
+    # On startup menu is presented to the user.
+    menu = input('''Please select one of the following options:
+    a - Add new shoes.
+    v - View all registered shoes.
+    r - Restock shoes.
+    s - Search for a shoe.
+    tv - See total value of all shoes.
+    h - View the highest quantity of shoes.
+    e - Exit
+    : ''').lower()
+    print()
+
+    # If the user selected 'a' the program will read the data and execute the capture_shoes function.
+    if menu == 'a':
+        read_shoes_data()
+        capture_shoes()
+    # If the user selected 'v' the program will read the data and execute the view_all function.
+    elif menu == 'v':
+        read_shoes_data()
+        view_all()
+    # If the user selected 'r' the program will read the data and execute the re_stock function.
+    elif menu == 'r':
+        read_shoes_data()
+        re_stock()
+    # If the user selected 's' the program will read the data and execute the search_shoe function.
+    elif menu == 's':
+        read_shoes_data()
+        seach_shoe()
+    # If the user selected 'tv' the program will read the data and execute the value_per_item function.
+    elif menu == 'tv':
+        read_shoes_data()
+        value_per_item()
+    # If the user selected 'h' the program will read the data and execute the highest quantity function.
+    elif menu == 'h':
+        read_shoes_data()
+        highest_qty()
+    # If the user selected 'e' the program exit and a goodbye message will print.
+    elif menu == 'e':
+        print('Goodbye!!!')
+        exit()
+    # An error message prints if the user did not select any of the available choices.
+    else:
+        print("You have made a wrong choice, Please Try again")
