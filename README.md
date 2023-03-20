@@ -17,6 +17,7 @@ The user would also need the text file inventory.txt in the same directory as th
 
 ## Usage
 As the program starts the user will be provided with the following menu from where they can choose to view different sections of the program.
+
 ![menu](https://user-images.githubusercontent.com/125367266/226479230-1dad860f-7a84-4121-b22c-99d2f8d49ad9.JPG)
 
 This gives the user access to:
