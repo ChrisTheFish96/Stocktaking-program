@@ -22,18 +22,18 @@ As the program starts the user will be provided with the following menu from whe
 
 This gives the user access to:
 * Add new shoes.
-    * The user is prompted to add teh Country, Code, Type of product, Cost and Quantity of the shoes added.
+    * The user is prompted to add the Country, Code, Type of product, Cost and Quantity of the shoes being added.
     * The shoe object will then be added to the class and the .txt file.
     
 ![add shoes](https://user-images.githubusercontent.com/125367266/226479296-7617c295-c667-4784-b1c0-813fabe108b8.JPG)
 
-* View all shoes regsistered.
-   * All shoes in the .txt file is printed out in the terminal in an easy to read table.
+* View all shoes registered.
+   * All shoes in the .txt file is printed out in the terminal in an easy-to-read table.
 
 ![view all](https://user-images.githubusercontent.com/125367266/226479411-ae1ebc53-6450-4684-8dd2-c87a4226095a.JPG)
 
 * Mark a shoe as restocked with amounts.
-   * The shoes with the lowest quantity is found.
+   * The shoe object with the lowest quantity is found.
    * The user is asked if they want to restock this shoe, if not they are redirected to the main menu.
    * If the user chose to update the quantity, they are asked for the quantity that needs to be added to it.
 
@@ -52,10 +52,10 @@ This gives the user access to:
 
 ![value](https://user-images.githubusercontent.com/125367266/226479526-e888a747-f48e-47b9-a988-3649ee683a26.JPG)
 
-* View the shoes with the highest quantity for sale puropses.
+* View the shoes with the highest quantity for sale purposes.
     * Shoes with the highest quantity is found.
     * User is asked if they want to place the shoes on sale.
-    * If the user selects yes a conformation message is printed out which can be further extended.
+    * If the user selects yes, a conformation message is printed out which can be further extended.
     
 ![high](https://user-images.githubusercontent.com/125367266/226479554-b73f17f1-7471-4fb2-bbce-7a6a3ed8501d.JPG)
 
