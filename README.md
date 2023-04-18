@@ -55,7 +55,7 @@ This gives the user access to:
 * View the shoes with the highest quantity for sale purposes.
     * Shoes with the highest quantity is found.
     * User is asked if they want to place the shoes on sale.
-    * If the user selects yes, a conformation message is printed out which can be further extended.
+    * If the user selects yes, a confirmation message is printed out which can be further extended.
     
 ![high](https://user-images.githubusercontent.com/125367266/226479554-b73f17f1-7471-4fb2-bbce-7a6a3ed8501d.JPG)
 
